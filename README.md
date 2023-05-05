@@ -39,7 +39,11 @@ GITLAB_HOSTNAME=<GITLAB_HOSTNAME_EXCLUDING_PROTOCOL>
 
 ## Authentication
 
-Currently, authentication with Gitlab is only enabled in `production` mode. `production` mode is enabled in the Docker image and not with `yarn dev`. The above `AUTH_...` env variables will need to be set as well.
+Currently, authentication with Gitlab is only enabled in `production` mode. `production` mode is enabled in the Docker image and not with `yarn dev`.
+
+1. You will need to setup an application in GitLab to enable the authentication feature. Follow the instructions [here](https://backstage.io/docs/auth/gitlab/provider/). After which, the above `AUTH_...` env variables will need to be set.
+
+2. Lastly, you will need to modify the User entity to match your GitLab username in the file `catalog/users/user.yaml` and edit the git location of `catalog.locations[0].target` in `app-config.production.yaml` for `Users`.
 
 ## For Kubernetes
 
