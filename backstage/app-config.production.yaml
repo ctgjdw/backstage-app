@@ -1,6 +1,9 @@
 app:
-  # Should be the same as backend.baseUrl when using the `app-backend` plugin.
+  title: Backstage App
   baseUrl: http://localhost:7007
+
+organization:
+  name: My Company
 
 backend:
   # Note that the baseUrl should be the URL that the browser and other clients
@@ -11,9 +14,17 @@ backend:
   baseUrl: http://localhost:7007
   # The listener can also be expressed as a single <host>:<port> string. In this case we bind to
   # all interfaces, the most permissive setting. The right value depends on your specific deployment.
-  listen: ':7007'
+  listen: ":7007"
 
   # config options: https://node-postgres.com/api/client
+  csp:
+    connect-src: ["'self'", "http:", "https:"]
+    # Content-Security-Policy directives follow the Helmet format: https://helmetjs.github.io/#reference
+    # Default Helmet Content-Security-Policy values can be removed by setting the key to false
+  cors:
+    origin: http://localhost:7007
+    methods: [GET, HEAD, PATCH, POST, PUT, DELETE]
+    credentials: true
   database:
     client: pg
     connection:
@@ -27,9 +38,67 @@ backend:
       # ssl:
       #   ca: # if you have a CA file and want to verify it you can uncomment this section
       #     $file: <file-path>/ca/server.crt
+    plugin:
+      auth:
+        connection:
+          database: backstage
+      # https://node-postgres.com/features/ssl
+      # ssl: require # see https://www.postgresql.org/docs/current/libpq-ssl.html Table 33.1. SSL Mode Descriptions (e.g. require)
+      #ca: # if you have a CA file and want to verify it you can uncomment this section
+      #$file: <file-path>/ca/server.crt
+  cache:
+    store: memory
+  # workingDirectory: /tmp # Use this to configure a working directory for the scaffolder, defaults to the OS temp-dir
+
+integrations:
+  gitlab:
+    - host: ${GITLAB_HOSTNAME}
+      # This is a Personal Access Token or PAT from Gitlab. You can find out how to generate this token, and more information
+      # token: ${GITLAB_TOKEN}
+    # host: The host of the GitLab instance, e.g. gitlab.company.com.
+    # token (optional): An authentication token as expected by GitLab. The token need at least api, read_repository and write_repository scopes. If this is not supplied, anonymous access will be used.
+    # apiBaseUrl (optional): The URL of the GitLab API. For self-hosted installations, it is commonly at https://<host>/api/v4. For gitlab.com, this configuration is not needed as it can be inferred.
+    # baseUrl (optional): The base URL for this provider, e.g. https://gitlab.com. If this is not provided, it is assumed to be https://{host}.
+
+proxy:
+  ### Example for how to add a proxy endpoint for the frontend.
+  ### A typical reason to do this is to handle HTTPS and CORS for internal services.
+  # '/test':
+  #   target: 'https://example.com'
+  #   changeOrigin: true
+
+# Reference documentation http://backstage.io/docs/features/techdocs/configuration
+# Note: After experimenting with basic setup, use CI/CD to generate docs
+# and an external cloud storage when deploying TechDocs for production use-case.
+# https://backstage.io/docs/features/techdocs/how-to-guides#how-to-migrate-from-techdocs-basic-to-recommended-deployment-approach
+techdocs:
+  builder: "local" # Alternatives - 'external'
+  generator:
+    runIn: "docker" # Alternatives - 'local'
+  publisher:
+    type: "local" # Alternatives - 'googleGcs' or 'awsS3'. Read documentation for using alternatives.
+
+auth:
+  # see https://backstage.io/docs/auth/ to learn about auth providers
+  environment: production
+  providers:
+    gitlab:
+      production:
+        clientId: ${AUTH_GITLAB_CLIENT_ID}
+        clientSecret: ${AUTH_GITLAB_CLIENT_SECRET}
+        audience: ${AUTH_GITLAB_URL}
+
+scaffolder:
+  # see https://backstage.io/docs/features/software-templates/configuration for software template options
 
 catalog:
   # Overrides the default list locations from app-config.yaml as these contain example data.
   # See https://backstage.io/docs/features/software-catalog/#adding-components-to-the-catalog for more details
   # on how to get entities into the catalog.
-  locations: []
+  locations:
+    - type: url
+      target: https://gitlab.com/ctgjdw1/backstage-app/-/blob/master/catalog/users/user.yaml
+    - type: url
+      target: https://gitlab.com/ctgjdw1/backstage-app/-/blob/master/catalog/groups/group.yaml
+  rules:
+    - allow: [Component, System, API, Resource, Location, User, Group]

@@ -1,3 +1,13 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: backstage-app-envs
+data:
+  POSTGRES_HOST: backstage-db
+  POSTGRES_PORT: "5432"
+  AUTH_GITLAB_URL: https://gitlab.com
+  GITLAB_HOSTNAME: gitlab.com
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -25,12 +35,12 @@ spec:
               valueFrom:
                 secretKeyRef:
                   name: backstage-db-secret
-                  key: password
+                  key: POSTGRES_PASSWORD
             - name: POSTGRES_USER
               valueFrom:
                 secretKeyRef:
                   name: backstage-db-secret
-                  key: username
+                  key: POSTGRES_USER
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -54,6 +64,72 @@ spec:
               cpu: "500m"
           ports:
             - containerPort: 8080
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backstage-app
+spec:
+  selector:
+    matchLabels:
+      app: backstage-app
+  template:
+    metadata:
+      labels:
+        app: backstage-app
+    spec:
+      imagePullSecrets:
+        - name: regcred
+      containers:
+        - name: backstage-app
+          image: registry.gitlab.com/ctgjdw1/backstage-app
+          resources:
+            limits:
+              memory: "1Gi"
+              cpu: "500m"
+          ports:
+            - containerPort: 7007
+          env:
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: backstage-db-secret
+                  key: POSTGRES_PASSWORD
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: backstage-db-secret
+                  key: POSTGRES_USER
+            - name: POSTGRES_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: backstage-app-envs
+                  key: POSTGRES_HOST
+            - name: POSTGRES_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: backstage-app-envs
+                  key: POSTGRES_PORT
+            - name: GITLAB_HOSTNAME
+              valueFrom:
+                configMapKeyRef:
+                  name: backstage-app-envs
+                  key: GITLAB_HOSTNAME
+            - name: AUTH_GITLAB_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: backstage-app-envs
+                  key: AUTH_GITLAB_URL
+            - name: AUTH_GITLAB_CLIENT_ID
+              valueFrom:
+                secretKeyRef:
+                  name: backstage-app-secret
+                  key: AUTH_GITLAB_CLIENT_ID
+            - name: AUTH_GITLAB_CLIENT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: backstage-app-secret
+                  key: AUTH_GITLAB_CLIENT_SECRET
 ---
 apiVersion: v1
 kind: Service
@@ -80,3 +156,16 @@ spec:
     - port: 8080
       targetPort: 8080
       nodePort: 30002
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: backstage-app
+spec:
+  type: NodePort
+  selector:
+    app: backstage-app
+  ports:
+    - port: 7007
+      targetPort: 7007
+      nodePort: 30003

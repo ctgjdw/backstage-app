@@ -1,4 +1,5 @@
 import React from 'react';
+import process from 'process';
 import { Navigate, Route } from 'react-router-dom';
 import { apiDocsPlugin, ApiExplorerPage } from '@backstage/plugin-api-docs';
 import {
@@ -29,12 +30,32 @@ import { Root } from './components/Root';
 
 import { AlertDisplay, OAuthRequestDialog } from '@backstage/core-components';
 import { createApp } from '@backstage/app-defaults';
-import { AppRouter, FlatRoutes } from '@backstage/core-app-api';
+import { AppRouter, FlatRoutes, SignInPageProps } from '@backstage/core-app-api';
 import { CatalogGraphPage } from '@backstage/plugin-catalog-graph';
 import { RequirePermission } from '@backstage/plugin-permission-react';
 import { catalogEntityCreatePermission } from '@backstage/plugin-catalog-common/alpha';
+import { SignInPage } from '@backstage/core-components';
+import { gitlabAuthApiRef } from '@backstage/core-plugin-api';
+
+const RenderSignInPage = (props: React.PropsWithChildren<SignInPageProps>) => {
+      return (
+        <SignInPage
+          {...props}
+          auto
+          provider={{
+            id: 'gitlab-auth-provider',
+            title: 'GitLab',
+            message: 'Sign in using GitLab',
+            apiRef: gitlabAuthApiRef,
+          }}
+        />
+      )
+    }
 
 const app = createApp({
+   components: {
+    SignInPage:  process.env.NODE_ENV === "production" ?  RenderSignInPage : undefined,
+  },
   apis,
   bindRoutes({ bind }) {
     bind(catalogPlugin.externalRoutes, {
