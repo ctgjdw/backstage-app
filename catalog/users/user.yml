@@ -1,0 +1,9 @@
+apiVersion: backstage.io/v1alpha1
+kind: User
+metadata:
+  name: ctgjdw1
+spec:
+  profile:
+    displayName: CTGJDW
+    email: test@dev.com
+  memberOf: [admin, developer]
