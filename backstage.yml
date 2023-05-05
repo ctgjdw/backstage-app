@@ -1,0 +1,82 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backstage-db
+spec:
+  selector:
+    matchLabels:
+      app: backstage-db
+  template:
+    metadata:
+      labels:
+        app: backstage-db
+    spec:
+      containers:
+        - name: backstage-db
+          image: postgres:15-bullseye
+          resources:
+            limits:
+              memory: "128Mi"
+              cpu: "500m"
+          ports:
+            - containerPort: 5432
+          env:
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: backstage-db-secret
+                  key: password
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: backstage-db-secret
+                  key: username
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backstage-db-adminer
+spec:
+  selector:
+    matchLabels:
+      app: backstage-db-adminer
+  template:
+    metadata:
+      labels:
+        app: backstage-db-adminer
+    spec:
+      containers:
+        - name: backstage-db-adminer
+          image: adminer
+          resources:
+            limits:
+              memory: "128Mi"
+              cpu: "500m"
+          ports:
+            - containerPort: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: backstage-db
+spec:
+  type: NodePort
+  selector:
+    app: backstage-db
+  ports:
+    - port: 5432
+      targetPort: 5432
+      nodePort: 30001
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: backstage-db-adminer
+spec:
+  type: NodePort
+  selector:
+    app: backstage-db-adminer
+  ports:
+    - port: 8080
+      targetPort: 8080
+      nodePort: 30002
