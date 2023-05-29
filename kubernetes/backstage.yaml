@@ -2,6 +2,8 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: backstage-app-envs
+  labels:
+    backstage.io/kubernetes-id: backstage-app
 data:
   POSTGRES_HOST: backstage-db
   POSTGRES_PORT: "5432"
@@ -12,6 +14,8 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: backstage-db
+  labels:
+    backstage.io/kubernetes-id: backstage-app
 spec:
   selector:
     matchLabels:
@@ -20,10 +24,19 @@ spec:
     metadata:
       labels:
         app: backstage-db
+        backstage.io/kubernetes-id: backstage-app
     spec:
+      volumes:
+        - name: backstage-db-vol
+          hostPath:
+            path: /run/desktop/mnt/host/c/KubeData/backstage-db
+            type: Directory
       containers:
         - name: backstage-db
           image: postgres:15-bullseye
+          volumeMounts:
+            - mountPath: /var/lib/postgresql/data
+              name: backstage-db-vol
           resources:
             limits:
               memory: "128Mi"
@@ -79,6 +92,7 @@ spec:
     metadata:
       labels:
         app: backstage-app
+        backstage.io/kubernetes-id: backstage-app
     spec:
       imagePullSecrets:
         - name: regcred
@@ -147,6 +161,8 @@ apiVersion: v1
 kind: Service
 metadata:
   name: backstage-db
+  labels:
+    backstage.io/kubernetes-id: backstage-app
 spec:
   type: NodePort
   selector:
