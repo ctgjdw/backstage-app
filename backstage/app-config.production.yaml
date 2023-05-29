@@ -1,6 +1,6 @@
 app:
   title: Backstage App
-  baseUrl: http://localhost:7007
+  baseUrl: http://localhost:30003
 
 organization:
   name: My Company
@@ -11,7 +11,7 @@ backend:
   # reachable not just from within the backend host, but from all of your
   # callers. When its value is "http://localhost:7007", it's strictly private
   # and can't be reached by others.
-  baseUrl: http://localhost:7007
+  baseUrl: http://localhost:30003
   # The listener can also be expressed as a single <host>:<port> string. In this case we bind to
   # all interfaces, the most permissive setting. The right value depends on your specific deployment.
   listen: ":7007"
@@ -22,7 +22,7 @@ backend:
     # Content-Security-Policy directives follow the Helmet format: https://helmetjs.github.io/#reference
     # Default Helmet Content-Security-Policy values can be removed by setting the key to false
   cors:
-    origin: http://localhost:7007
+    origin: [http://localhost:30003]
     methods: [GET, HEAD, PATCH, POST, PUT, DELETE]
     credentials: true
   database:
@@ -87,6 +87,7 @@ auth:
         clientId: ${AUTH_GITLAB_CLIENT_ID}
         clientSecret: ${AUTH_GITLAB_CLIENT_SECRET}
         audience: ${AUTH_GITLAB_URL}
+        callbackUrl: http://localhost:30003/api/auth/gitlab/handler/frame
 
 scaffolder:
   # see https://backstage.io/docs/features/software-templates/configuration for software template options
@@ -114,3 +115,24 @@ catalog:
     #   target: ../../catalog/groups/group.yaml
     #   rules:
     #     - allow: [Group]
+
+kubernetes:
+  serviceLocatorMethod:
+    type: "multiTenant"
+  clusterLocatorMethods:
+    - type: "config"
+      clusters:
+        - url: https://kubernetes.docker.internal:6443
+          name: docker-desktop
+          authProvider: "serviceAccount"
+          skipTLSVerify: false
+          skipMetricsLookup: false
+          serviceAccountToken: ${K8S_SVC_ACC_TOKEN}
+          caData: ${K8S_CONFIG_CA_DATA}
+          # caFile: ""
+          # dashboardUrl: http://host.docker.internal:64713 # url copied from running the command: minikube service kubernetes-dashboard -n kubernetes-dashboard
+          # dashboardApp: standard
+          # customResources:
+          #   - group: "argoproj.io"
+          #     apiVersion: "v1alpha1"
+          #     plural: "rollouts"

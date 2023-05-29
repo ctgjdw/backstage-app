@@ -7,7 +7,8 @@ This is a backstage app basic setup with PSQL backend and GitLab auth provider. 
 This backstage app can be run in:
 
 1. Kubernetes (Production)
-    1. Deploy via `kubectl create -f backstage.yml`
+    1. Create the required [secrets](#kubernetes-secrets)
+    1. Deploy via `kubectl create -f kubernetes/backstage.yaml`
 2. Docker (Production)
     1. Deploy via `docker-compose up -d --build`
 3. Local Node Environment (Development)
@@ -45,7 +46,7 @@ Currently, authentication with Gitlab is only enabled in `production` mode. `pro
 
 2. Lastly, you will need to modify the User entity to match your GitLab username in the file `catalog/users/user.yaml` and edit the git location of `catalog.locations[0].target` in `app-config.production.yaml` for `Users`.
 
-## For Kubernetes
+## Kubernetes Secrets
 
 The following secrets will need to be created:
 
@@ -69,4 +70,6 @@ metadata:
 data:
     AUTH_GITLAB_CLIENT_ID: ''
     AUTH_GITLAB_CLIENT_SECRET: ''
+    K8S_SVC_ACC_TOKEN: ''
+    K8S_CONFIG_CA_DATA: ''
 ```
