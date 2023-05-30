@@ -96,6 +96,10 @@ spec:
     spec:
       imagePullSecrets:
         - name: regcred
+      initContainers:
+        - name: init-db
+          image: busybox:1.28
+          command: ['sh', '-c', "until nslookup backstage-db.$(cat /var/run/secrets/kubernetes.io/serviceaccount/namespace).svc.cluster.local; do echo waiting for db; sleep 2; done"]
       containers:
         - name: backstage-app
           image: registry.gitlab.com/ctgjdw1/backstage-app
@@ -200,60 +204,3 @@ spec:
       targetPort: 7007
       nodePort: 30003
 ---
-apiVersion: v1
-kind: ServiceAccount
-metadata:
-  name: backstage-kube
-  namespace: default
----
-apiVersion: rbac.authorization.k8s.io/v1
-kind: ClusterRole
-metadata:
-  name: backstage-read-only
-rules:
-  - apiGroups:
-      - "*"
-    resources:
-      - pods
-      - configmaps
-      - services
-      - deployments
-      - replicasets
-      - horizontalpodautoscalers
-      - ingresses
-      - statefulsets
-      - limitranges
-      - daemonsets
-    verbs:
-      - get
-      - list
-      - watch
-  - apiGroups:
-      - batch
-    resources:
-      - jobs
-      - cronjobs
-    verbs:
-      - get
-      - list
-      - watch
-  - apiGroups:
-      - metrics.k8s.io
-    resources:
-      - pods
-    verbs:
-      - get
-      - list
----
-apiVersion: rbac.authorization.k8s.io/v1
-kind: ClusterRoleBinding
-metadata:
-  name: backstage-k8s-read-only
-subjects:
-  - kind: ServiceAccount
-    name: backstage-kube
-    namespace: default
-roleRef:
-  kind: ClusterRole
-  name: backstage-read-only
-  apiGroup: rbac.authorization.k8s.io

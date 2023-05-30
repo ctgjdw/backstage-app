@@ -7,8 +7,10 @@ This is a backstage app basic setup with PSQL backend and GitLab auth provider. 
 This backstage app can be run in:
 
 1. Kubernetes (Production)
+    1. `kubectl apply -f kubernetes/backstage-rbac.yaml` to create the required RBAC permissions and objects
     1. Create the required [secrets](#kubernetes-secrets)
-    1. Deploy via `kubectl create -f kubernetes/backstage.yaml`
+    1. Create the directory in Windows (`C:\KubeData\backstage-db`) for the db vol mount
+    1. Deploy via `kubectl apply -f kubernetes/backstage.yaml`
 2. Docker (Production)
     1. Deploy via `docker-compose up -d --build`
 3. Local Node Environment (Development)
@@ -48,7 +50,7 @@ Currently, authentication with Gitlab is only enabled in `production` mode. `pro
 
 ## Kubernetes Secrets
 
-The following secrets will need to be created:
+The following secrets will need to be created (create a new yaml file and run `kubectl apply -f <FILENAME>`):
 
 ```yaml
 apiVersion: v1
@@ -56,8 +58,7 @@ kind: Secret
 type: Opaque
 metadata:
     name: backstage-db-secret
-# Encode values with base64
-data:
+stringData:
     POSTGRES_PASSWORD: ''
     POSTGRES_USER: ''
 ---
@@ -66,10 +67,9 @@ kind: Secret
 type: Opaque
 metadata:
     name: backstage-app-secret
-# Encode values with base64
-data:
+stringData:
     AUTH_GITLAB_CLIENT_ID: ''
     AUTH_GITLAB_CLIENT_SECRET: ''
-    K8S_SVC_ACC_TOKEN: ''
-    K8S_CONFIG_CA_DATA: ''
+    K8S_SVC_ACC_TOKEN: '' # retrieved from `kubectl create token <SERVICE_ACC_NAME> --duration=1000000m`
+    K8S_CONFIG_CA_DATA: '' # retreived from `C:\users\<USER>\.kube\config` in `clusters[].certificate-authority-data`
 ```
