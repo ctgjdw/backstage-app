@@ -38,6 +38,14 @@ AUTH_GITLAB_CLIENT_ID=<GITLAB_APP_ID>
 AUTH_GITLAB_CLIENT_SECRET=<GITLAB_APP_SECRET>
 AUTH_GITLAB_URL=<GITLAB_URL>
 GITLAB_HOSTNAME=<GITLAB_HOSTNAME_EXCLUDING_PROTOCOL>
+
+# Required if you want Kubernetes integration
+
+## retrieved from `kubectl create token <SERVICE_ACC_NAME> --duration=1000000m`
+K8S_SVC_ACC_TOKEN=<SVC_ACC_TOKEN>
+
+## retreived from `C:\users\<USER>\.kube\config` in `clusters[].certificate-authority-data`
+K8S_CONFIG_CA_DATA=<CA_DATA>
 ```
 
 ## Authentication
