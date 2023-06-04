@@ -1,6 +1,6 @@
 app:
   title: Backstage App
-  baseUrl: http://localhost:30003
+  baseUrl: ${BACKSTAGE_APP_URL}
 
 organization:
   name: My Company
@@ -11,7 +11,7 @@ backend:
   # reachable not just from within the backend host, but from all of your
   # callers. When its value is "http://localhost:7007", it's strictly private
   # and can't be reached by others.
-  baseUrl: http://localhost:30003
+  baseUrl: ${BACKSTAGE_APP_URL}
   # The listener can also be expressed as a single <host>:<port> string. In this case we bind to
   # all interfaces, the most permissive setting. The right value depends on your specific deployment.
   listen: ":7007"
@@ -22,7 +22,7 @@ backend:
     # Content-Security-Policy directives follow the Helmet format: https://helmetjs.github.io/#reference
     # Default Helmet Content-Security-Policy values can be removed by setting the key to false
   cors:
-    origin: [http://localhost:30003]
+    origin: ["${BACKSTAGE_APP_URL}"]
     methods: [GET, HEAD, PATCH, POST, PUT, DELETE]
     credentials: true
   database:
@@ -87,7 +87,7 @@ auth:
         clientId: ${AUTH_GITLAB_CLIENT_ID}
         clientSecret: ${AUTH_GITLAB_CLIENT_SECRET}
         audience: ${AUTH_GITLAB_URL}
-        callbackUrl: http://localhost:30003/api/auth/gitlab/handler/frame
+        callbackUrl: ${BACKSTAGE_APP_URL}/api/auth/gitlab/handler/frame
 
 scaffolder:
   # see https://backstage.io/docs/features/software-templates/configuration for software template options

@@ -4,7 +4,7 @@ services:
     build:
       context: backstage
     ports:
-      - 30003:7007
+      - 7007:7007
     environment:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_HOST: postgres
@@ -16,6 +16,7 @@ services:
       GITLAB_HOSTNAME: ${GITLAB_HOSTNAME}
       K8S_SVC_ACC_TOKEN: ${K8S_SVC_ACC_TOKEN}
       K8S_CONFIG_CA_DATA: ${K8S_CONFIG_CA_DATA}
+      BACKSTAGE_APP_URL: ${BACKSTAGE_APP_URL}
     restart: unless-stopped
     depends_on:
       - postgres

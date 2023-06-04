@@ -9,6 +9,7 @@ data:
   POSTGRES_PORT: "5432"
   AUTH_GITLAB_URL: https://gitlab.com
   GITLAB_HOSTNAME: gitlab.com
+  BACKSTAGE_APP_URL: http://localhost:30003
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -99,7 +100,12 @@ spec:
       initContainers:
         - name: init-db
           image: busybox:1.28
-          command: ['sh', '-c', "until nslookup backstage-db.$(cat /var/run/secrets/kubernetes.io/serviceaccount/namespace).svc.cluster.local; do echo waiting for db; sleep 2; done"]
+          command:
+            [
+              "sh",
+              "-c",
+              "until nslookup backstage-db.$(cat /var/run/secrets/kubernetes.io/serviceaccount/namespace).svc.cluster.local; do echo waiting for db; sleep 2; done",
+            ]
       containers:
         - name: backstage-app
           image: registry.gitlab.com/ctgjdw1/backstage-app
@@ -204,3 +210,4 @@ spec:
       targetPort: 7007
       nodePort: 30003
 ---
+
