@@ -1,3 +1,6 @@
 site_name: "Backstage App Docs"
 plugins:
   - techdocs-core
+markdown_extensions:
+  - pymdownx.snippets:
+      check_paths: true
