@@ -107,8 +107,8 @@ catalog:
       rules:
         - allow: [Group]
     # Local example template
-    - type: file
-      target: ../../examples/template/template.yaml
+    - type: url
+      target: https://gitlab.com/ctgjdw1/backstage-app/-/blob/master/catalog/templates/template.yaml
       rules:
         - allow: [Template]
     # If you want to use local file
