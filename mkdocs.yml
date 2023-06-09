@@ -1,7 +1,9 @@
 site_name: "Backstage App Docs"
 
 nav:
-  - Home: ../README.md
+  - Home: README.md
+
+docs_dir: .
 
 plugins:
   - techdocs-core
