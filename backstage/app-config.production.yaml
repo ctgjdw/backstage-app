@@ -74,7 +74,7 @@ proxy:
 techdocs:
   builder: "local" # Alternatives - 'external'
   generator:
-    runIn: "docker" # Alternatives - 'local'
+    runIn: "local" # Alternatives - 'local'
   publisher:
     type: "local" # Alternatives - 'googleGcs' or 'awsS3'. Read documentation for using alternatives.
 
@@ -106,6 +106,11 @@ catalog:
       target: https://gitlab.com/ctgjdw1/backstage-app/-/blob/master/catalog/groups/group.yaml
       rules:
         - allow: [Group]
+    # Local example template
+    - type: file
+      target: ../../examples/template/template.yaml
+      rules:
+        - allow: [Template]
     # If you want to use local file
     # - type: file
     #   target: ../../catalog/users/user.yaml

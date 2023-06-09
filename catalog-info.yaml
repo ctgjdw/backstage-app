@@ -4,6 +4,7 @@ metadata:
   name: backstage-app
   annotations:
     backstage.io/kubernetes-id: backstage-app
+    backstage.io/techdocs-ref: dir:.
 spec:
   lifecycle: production
   owner: group:admin
