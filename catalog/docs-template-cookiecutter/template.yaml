@@ -49,7 +49,7 @@ spec:
           ui:field: RepoUrlPicker
           ui:options:
             allowedHosts:
-              - github.com
+              - gitlab.com
 
   # This template can be used on top of an existing software template to add docs.
   # By adding the following and fetching from an absolute URL you can
@@ -71,7 +71,7 @@ spec:
       action: publish:github
       input:
         allowedHosts:
-          - github.com
+          - gitlab.com
         description: This is ${{ parameters.name }}
         repoUrl: ${{ parameters.repoUrl }}
 
