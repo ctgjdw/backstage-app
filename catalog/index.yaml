@@ -1,0 +1,12 @@
+apiVersion: backstage.io/v1alpha1
+kind: Location
+metadata:
+  name: all-catalog-entities
+  description: A collection of all Backstage entities
+spec:
+  targets:
+    - ./docs-template/template.yaml
+    - ./docs-template-cookiecutter/template.yaml
+    - ./react-template/template.yaml
+    - ./groups/group.yaml
+    - ./users/user.yaml
