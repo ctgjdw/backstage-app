@@ -98,11 +98,11 @@ catalog:
   # Overrides the default list locations from app-config.yaml as these contain example data.
   # See https://backstage.io/docs/features/software-catalog/#adding-components-to-the-catalog for more details
   # on how to get entities into the catalog.
+  rules:
+      - allow: [Component, API, Location, Template, User]
   locations:
     - type: url
       target: https://gitlab.com/ctgjdw1/backstage-app/-/blob/master/catalog/index.yaml
-      rules:
-      - allow: [Component, API, Location, Template, User]
     # If you want to use local file
     # - type: file
     #   target: ../../catalog/users/user.yaml
