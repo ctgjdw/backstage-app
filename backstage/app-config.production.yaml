@@ -99,6 +99,10 @@ catalog:
   locations:
     # If you want to use GitOps
     - type: url
+      target: https://gitlab.com/ctgjdw1/backstage-app/-/blob/master/catalog/users/user.yaml
+      rules:
+        - allow: [User]
+    - type: url
       target: https://gitlab.com/ctgjdw1/backstage-app/-/blob/master/catalog/index.yaml
     # If you want to use local file
     # - type: file
