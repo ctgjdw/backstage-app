@@ -98,6 +98,13 @@ catalog:
   # Overrides the default list locations from app-config.yaml as these contain example data.
   # See https://backstage.io/docs/features/software-catalog/#adding-components-to-the-catalog for more details
   # on how to get entities into the catalog.
+  providers:
+    gitlab:
+      yourProviderId:
+        host: gitlab.com
+        orgEnabled: true
+        # group: org/teams # Optional. Must not end with slash. Accepts only groups under the provided path (which will be stripped)
+        # groupPattern: '[\s\S]*' # Optional. Filters found groups based on provided pattern. Defaults to `[\s\S]*`, which means to not filter anything
   rules:
       - allow: [Component, API, Location, Template, User, Group, Resource, System, Domain, Location]
   locations:

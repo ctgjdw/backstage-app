@@ -8,5 +8,5 @@ spec:
     - ./docs-template/template.yaml
     - ./docs-template-cookiecutter/template.yaml
     - ./react-template/template.yaml
-    - ./groups/group.yaml
-    - ./users/user.yaml
+    # - ./groups/group.yaml
+    # - ./users/user.yaml
