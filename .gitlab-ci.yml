@@ -10,5 +10,6 @@ build-docker:
   stage: build-docker
   image: quay.io/buildah/stable:v1.32
   script:
+    - buildah images
     - buildah build ./backstage -f Dockerfile-base -t backstage-base
     - buildah build ./backstage -t backstage:1.0
