@@ -9,7 +9,11 @@ image: node:16-bullseye-slim
 build-docker:
   stage: build-docker
   image: quay.io/buildah/stable:v1.32
+  variables:
+    BUILDAH_FORMAT: docker
+    STORAGE_DRIVER: vfs
   script:
     - buildah images
-    - buildah build ./backstage -f Dockerfile-base -t backstage-base
-    - buildah build ./backstage -t backstage:1.0
+    - buildah build -f Dockerfile-base -t backstage-base ./backstage
+    - buildah build -t backstage:1.0 ./backstage
+    - buildah images
